@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="dist/css/style_new.css">
   <title>golfzone::ZOIMARU</title>
 </head>
-<body>
+<body onload="init()">
 <form class="password-change" action="passwordChange.do" method="post">
 	<!-- 비밀번호 변경 alert:Start -->
   <div class="modalz" id="info_a1">
@@ -127,23 +127,21 @@
 
 var timer = null;
 var isRunning = false;
-$(function(){
-
-	    $(".btn_recive_num").click(function(e){
-    	var display = $('.small');
-    	var leftSec = 180;
-    	// 남은 시간
-    	// 이미 타이머가 작동중이면 중지
-    	if (isRunning){
-    		clearInterval(timer);
-    		display.html("");
-    		startTimer(leftSec, display);
-    	}else{
+function init(){
+    var display = $('.small');
+    var leftSec = 180;
+    // 남은 시간
+    // 이미 타이머가 작동중이면 중지
+    if (isRunning){
+    	clearInterval(timer);
+    	display.html("");
+    	startTimer(leftSec, display);
+    }else{
     	startTimer(leftSec, display);
     		
-    	}
-    });
-})
+    }
+
+}
 
     
 function startTimer(count, display) {
@@ -163,7 +161,6 @@ function startTimer(count, display) {
     	     clearInterval(timer);
     	     alert("시간초과");
     	     display.html("시간초과");
-    	     $('.btn_chk').attr("disabled","disabled");
     	     isRunning = false;
             }
         }, 1000);
