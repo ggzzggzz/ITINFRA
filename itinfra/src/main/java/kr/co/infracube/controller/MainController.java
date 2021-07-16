@@ -216,8 +216,17 @@ public class MainController {
 	
 	//insertAdmin.do
 	@RequestMapping("/insertAdmin.do")
-	public ModelAndView insertAdmin(AdminDto dto, HttpServletRequest request) throws Exception{
-		mainservice.insertAdmin(dto);
+	public ModelAndView insertAdmin(AdminDto dto, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		try{
+			System.out.println(dto);
+			mainservice.insertAdmin(dto);
+		} catch (Exception e){
+			e.printStackTrace();
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.println("<script> alert('이메일이 이미 존재합니다.'); </script>");
+			out.flush();
+		}
 		System.out.println(dto);
 		return systemset(request);
 	}

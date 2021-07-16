@@ -154,14 +154,14 @@ function startTimer(count, display) {
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
      
-            display.html(minutes + ":" + seconds);
+            display.html("<h5>(" + minutes + ":" + seconds + ")</h5>");
      
             // 타이머 끝
             if (--count < 0) {
     	     clearInterval(timer);
     	     alert("시간초과");
-    	     display.html("시간초과");
     	     isRunning = false;
+    	     window.location.href = "login.do"
             }
         }, 1000);
              isRunning = true;
