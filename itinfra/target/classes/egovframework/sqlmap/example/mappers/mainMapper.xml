@@ -10,12 +10,19 @@
 		Update_Admin update_admin, Update_Date update_date
 		FROM tbl_admin
 		WHERE AName != '슈퍼관리자'
+		<if test="AName != null and AName != ''"> AND AName LIKE CONCAT('%',#{AName} ,'%') </if>
 	</select>
-	<select id="listCustomers" parameterType="kr.co.infracube.dto.CustomerDto" resultType="Map">
+	<select id="listCustomers" parameterType="HashMap" resultType="Map">
 		SELECT Customer_Code customer_code, Customer_Name customer_name, Manager_Name manager_name, phoneNumber(Manager_Phone) manager_phone, 
 		Manager_Email manager_email, Note note, Use_YN use_yn, Insert_Code insert_code, 
 		Insert_Date insert_date, Update_Code update_code, Update_Date update_date
 		FROM tbl_customer
+		<if test="startDate != '' and endDate != ''">
+			WHERE Insert_Date BETWEEN #{startDate} AND #{endDate}
+			<if test="searchKeyword != ''">
+				AND Customer_Name LIKE CONCAT('%',#{searchKeyword} ,'%')
+			</if>
+		</if>
 	</select>
 	<insert id="insertAdmin" parameterType="kr.co.infracube.dto.AdminDto">
 		INSERT INTO tbl_admin(Email, AName, Note, Use_YN, Insert_Admin)

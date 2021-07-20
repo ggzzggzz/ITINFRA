@@ -1,6 +1,8 @@
 package kr.co.infracube.controller;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -143,14 +145,34 @@ public class MainController {
 	
 	//고객
 	@RequestMapping("/customer.do")
-	public ModelAndView customer(HttpServletRequest request) throws Exception{
+	public ModelAndView customer(@RequestParam HashMap<String, String> paramMap, HttpServletRequest request) throws Exception{	
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("customer");
 		HttpSession session = request.getSession();
-		List<CustomerDto> list = mainservice.listCustomers(null);
+		System.out.println(paramMap);
+		HashMap<String, String> hashMap = new HashMap<String, String>();
+		if(paramMap.containsKey("startDate")) {
+			hashMap.put("startDate", paramMap.get("startDate"));
+		} else {
+			hashMap.put("startDate", "");
+		}
+		if(paramMap.containsKey("endDate")) {
+			hashMap.put("endDate", paramMap.get("endDate"));
+		} else {
+			hashMap.put("endDate", "");
+		}
+		if(paramMap.containsKey("searchKeyword")) {
+			hashMap.put("searchKeyword", paramMap.get("searchKeyword"));
+		} else {
+			hashMap.put("searchKeyword", "");
+		}
+		System.out.println(hashMap);
+		List<CustomerDto> list = mainservice.listCustomers(hashMap);
 		System.out.println(list);
 		mv.addObject("sessionId", session.getAttribute("sessionId"));
 		mv.addObject("sessionName", session.getAttribute("sessionName"));
+		mv.addObject("paramMap", paramMap);
+		mv.addObject("hashMap", hashMap);
 		mv.addObject("list", list);
 		return mv;
 	}
@@ -160,7 +182,7 @@ public class MainController {
 	public ModelAndView insertCustomer(CustomerDto dto, HttpServletRequest request) throws Exception{
 		mainservice.insertCustomer(dto);
 		System.out.println(dto);
-		return customer(request);
+		return customer(null, request);
 	}
 	
 	//updateCustomer.do
@@ -168,7 +190,7 @@ public class MainController {
 	public ModelAndView updateCustomer(CustomerDto dto, HttpServletRequest request) throws Exception{
 		mainservice.updateCustomer(dto);
 		System.out.println(dto);
-		return customer(request);
+		return customer(null, request);
 	}
 	
 	//납품
@@ -202,14 +224,18 @@ public class MainController {
 	
 	//관리자
 	@RequestMapping("/systemset.do")
-	public ModelAndView systemset(HttpServletRequest request) throws Exception{
+	public ModelAndView systemset(@RequestParam(value="searchKeyword", defaultValue="") String searchKeyword, HttpServletRequest request) throws Exception{
 		ModelAndView mv = new ModelAndView();
+		AdminDto dto = new AdminDto();
+		dto.setAName(searchKeyword);
 		mv.setViewName("systemset");
 		HttpSession session = request.getSession();
-		List<AdminDto> list = mainservice.listAdmins(null);
+		List<AdminDto> list = mainservice.listAdmins(dto);
+		System.out.println(searchKeyword);
 		System.out.println(list);
 		mv.addObject("sessionId", session.getAttribute("sessionId"));
 		mv.addObject("sessionName", session.getAttribute("sessionName"));
+		mv.addObject("searchKeyword", searchKeyword);
 		mv.addObject("list", list);
 		return mv;
 	}
@@ -228,7 +254,7 @@ public class MainController {
 			out.flush();
 		}
 		System.out.println(dto);
-		return systemset(request);
+		return systemset("", request);
 	}
 	
 	//updateAdmin.do
@@ -236,6 +262,6 @@ public class MainController {
 	public ModelAndView updateAdmin(AdminDto dto, HttpServletRequest request) throws Exception{
 		mainservice.updateAdmin(dto);
 		System.out.println(dto.getEmail());
-		return systemset(request);
+		return systemset("", request);
 	}
 }

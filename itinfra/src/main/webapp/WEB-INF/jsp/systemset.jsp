@@ -219,14 +219,15 @@
           </section>
         </div>
       </section>
+      <form id="search" action="systemset.do" method="post">
       <div class="contants_body">
         <div class="gs_b_top">
           <ul>
             <li>
-              <input type="text" class="input" placeholder="입력" value="">
+              <input id="searchKeyword" type="text" class="input" placeholder="입력" value="${searchKeyword }">
             </li>
             <li>
-              <button class="newbtnss bg1">검색</button>
+              <button class="newbtnss bg1" type="submit">검색</button>
             </li>
           </ul>
         </div>
@@ -271,6 +272,7 @@
           </div>
         </div>
       </div>
+      </form>
     </div>
     <!-- /Main body -->
   </div>
@@ -316,6 +318,12 @@
               //tmp.removeClass('act');
           }
       });
+      
+      $('.newbtnss').click(function(){
+     	 if($('#searchKeyword').val() != null && $('#searchKeyword').val() != '' ){
+     	 	$('#search').attr("action", "systemset.do?searchKeyword=" + $('#searchKeyword').val()); 
+     	 }
+       });
     });
 
   </script>

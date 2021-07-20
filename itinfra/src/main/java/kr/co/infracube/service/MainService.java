@@ -1,6 +1,7 @@
 package kr.co.infracube.service;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class MainService {
 	public List<AdminDto> listAdmins(AdminDto dto) throws Exception{
 		return mainmapper.listAdmins(dto);
 	}
-	public List<CustomerDto> listCustomers(CustomerDto dto) throws Exception{
-		return mainmapper.listCustomers(dto);
+	public List<CustomerDto> listCustomers(HashMap<String, String> hashMap) throws Exception{
+		return mainmapper.listCustomers(hashMap);
 	}
 	public int insertAdmin(AdminDto dto) throws Exception{
 		return mainmapper.insertAdmin(dto);

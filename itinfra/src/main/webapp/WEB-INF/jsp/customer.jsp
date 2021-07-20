@@ -268,16 +268,17 @@
           </section>
         </div>
       </section>
+      <form class="search" action="customer.do" method="post">
       <div class="contants_body">
         <div class="gs_b_top">
           <ul>
             <li class="th">등록일자</li>
-            <li><input type="text" class="input calender" id="sDatePic" placeholder="시작일"></li>
+            <li><input type="text" class="input calender" id="sDatePic" placeholder="시작일" name="startDate"></li>
             <li>~</li>
-            <li><input type="text" class="input calender" id="eDatePic" placeholder="종료일"></li>
-            <li><input type="text" class="input" placeholder="검색어"></li>
+            <li><input type="text" class="input calender" id="eDatePic" placeholder="종료일" name="endDate"></li>
+            <li><input type="text" class="input" placeholder="검색어" value="${hashMap.get('searchKeyword') }" name="searchKeyword"></li>
             <li>
-              <button class="newbtnss bg1">검색</button>
+              <button class="newbtnss bg1" type="submit">검색</button>
             </li>
           </ul>
         </div>
@@ -326,7 +327,7 @@
                       <td>${result.manager_name }</td>
                       <td>${result.manager_phone }</td>
                       <td>${result.manager_email }</td>
-                      <td>${result.note }.</td>
+                      <td>${result.note }</td>
                       <td><label class="yesno yes">${result.use_yn }</label></td>
                       <td>${result.insert_code }</td>
                       <td>${result.insert_date}</td>
@@ -341,6 +342,7 @@
           </div>
         </div>
       </div>
+      </form>
     </div>
     <!-- /Main body -->
   </div>
@@ -389,8 +391,21 @@
     });
 
     $(function () {
-      $("#sDatePic").datepicker().datepicker("setDate", new Date());
-      $("#eDatePic").datepicker().datepicker("setDate", new Date());
+    	if("${hashMap.get('startDate')}" == ''){
+    		$("#sDatePic").datepicker().datepicker("setDate", new Date());
+    	} else {
+    		var starr = "${hashMap.get('startDate')}".split("-");
+    		var startDate = new Date(starr[0],Number(starr[1]-1),starr[2]);
+    		$("#sDatePic").datepicker().datepicker("setDate", startDate);
+    	}
+    	
+    	if("${hashMap.get('endDate')}" == ''){
+    		$("#eDatePic").datepicker().datepicker("setDate", new Date());
+    	} else {
+    		var endarr = "${hashMap.get('endDate')}".split("-");
+    		var endDate = new Date(endarr[0],Number(endarr[1]-1),endarr[2]);
+    		$("#eDatePic").datepicker().datepicker("setDate", endDate);
+    	}
     });
 
   </script>
