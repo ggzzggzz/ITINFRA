@@ -8,7 +8,7 @@ public class CodeDto {
 	private String Ext_Text1;
 	private String Ext_Text2;
 	private String Ext_Text3;
-	private int Ext_Number;
+	private String Ext_Number;
 	private String Note;
 	private String Use_YN;
 	private String Insert_Code;
@@ -58,10 +58,10 @@ public class CodeDto {
 	public void setExt_Text3(String ext_Text3) {
 		Ext_Text3 = ext_Text3;
 	}
-	public int getExt_Number() {
+	public String getExt_Number() {
 		return Ext_Number;
 	}
-	public void setExt_Number(int ext_Number) {
+	public void setExt_Number(String ext_Number) {
 		Ext_Number = ext_Number;
 	}
 	public String getNote() {

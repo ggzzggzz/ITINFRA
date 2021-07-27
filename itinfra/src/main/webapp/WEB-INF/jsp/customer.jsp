@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+<meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="dist/img/logo-white.ico">
   <!-- Font & Icon -->
@@ -25,7 +25,7 @@
   <title>Infracube</title>
 </head>
 <body>
-	<!-- alert modals:S -->
+<!-- alert modals:S -->
 
   <!-- alert:Start -->
   <div class="modalz" id="info_a1">
@@ -46,7 +46,7 @@
     <div class="dim"></div>
   </div>
   <!-- 비밀번호 변경 alert:End -->
-  
+ 
   <!-- 등록하기 -->
  <form class="customer-insert" action="insertCustomer.do" method="post">
   <div class="modalz" id="newcode">
@@ -258,25 +258,25 @@
 
     <!-- Main body -->
     <div class="main_body">
+    <form name="excelForm" id="excelForm" method="POST" action="excelCustomer.do">
       <section id="section8" class="main_bars">
         <div class="bgs-main">
           <section id="section5">
             <div class="sub_title">고객목록</div>
             <button class="newbtn bg1 newcode" type="button">등록</button>
             <button class="newbtn bg1 recode" type="button">수정</button>
-            <button class="newbtn bg1" type="button">엑셀</button>
+            <button class="newbtn bg1" type="submit">엑셀</button>
           </section>
         </div>
       </section>
+      </form>
       <form class="search" action="customer.do" method="post">
       <div class="contants_body">
         <div class="gs_b_top">
           <ul>
-            <li class="th">등록일자</li>
-            <li><input type="text" class="input calender" id="sDatePic" placeholder="시작일" name="startDate"></li>
-            <li>~</li>
-            <li><input type="text" class="input calender" id="eDatePic" placeholder="종료일" name="endDate"></li>
-            <li><input type="text" class="input" placeholder="검색어" value="${hashMap.get('searchKeyword') }" name="searchKeyword"></li>
+            <li><input type="text" class="input calender" id="sDatePic" placeholder="시작일" name="startDate" style="display:none"></li>
+            <li><input type="text" class="input calender" id="eDatePic" placeholder="종료일" name="endDate" style="display:none"></li>
+            <li style="width:300px;"><input type="text" class="input" placeholder="고객명/담당자명/담당자연락처/담당자이메일" style="width:300px;" value="${hashMap.get('searchKeyword') }" name="searchKeyword"></li>
             <li>
               <button class="newbtnss bg1" type="submit">검색</button>
             </li>
@@ -319,7 +319,7 @@
                   </thead>
                   <tbody>
                   <c:forEach var="result" items="${list}" varStatus="status">
-                  	  <c:set var="i" value="${i+1}"/>
+                   <c:set var="i" value="${i+1}"/>
                     <tr>
                       <td>${i}</td>
                       <td>${result.customer_code}</td>
@@ -334,7 +334,7 @@
                       <td>${result.update_code}</td>
                       <td>${result.update_date}</td>
                     </tr>
-                   </c:forEach> 
+                   </c:forEach>
                   </tbody>
                 </table>
               </div>
@@ -361,25 +361,33 @@
   <script>
     $(document).ready(function () {
       $('#examples').DataTable({
-        "paging": true,
-        "searching": false,
-        "info": true
+         "paging": true,
+         "searching": false,
+         "info": true,
+         "ordering" : true,
+         "order" : [9,"desc"],
+         "stateSave" : true,
+         "lengthMenu" : [5,10,20,100],
+         "processing" : true,
+         "responsive" : true
       });
       $('#example2').DataTable({
-        "paging": false,
-        "searching": false,
-        "info": false,
+         "paging": true,
+         "searching": false,
+         "info": true
       });
-    });
-    $(document).ready(function () {
-      
+      var tr;
       $('.newcode').click(function () {
         $('#newcode').addClass('act');
       });
       $('.recode').click(function () {
-        $('#recode').addClass('act');
+    if(tr == null){
+    alert('수정할 행을 선택하세요!');
+    } else{
+    $('#recode').addClass('act');
+    }
       });
-      
+     
       $('.pop-x-btn, .modalclose').click(function() {
           var tmp = $(this).parents().parents().parents()
           if (tmp.attr('class') == 'modalz act') {
@@ -388,65 +396,63 @@
               //tmp.removeClass('act');
           }
       });
+     // 테이블의 Row 클릭시 값 가져오기
+   $("#examples tbody").on('click', 'tr', function(){
+
+  var str = ""
+  var tdArr = new Array(); // 배열 선언
+ 
+  // 현재 클릭된 Row(<tr>)
+  tr = $(this);
+  var td = tr.children();
+ 
+  // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+  console.log("클릭한 Row의 모든 데이터 : "+tr.text());
+ 
+  // 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+  td.each(function(i){
+  tdArr.push(td.eq(i).text());
+  });
+ 
+  console.log("배열에 담긴 값 : "+tdArr);
+ 
+  // td.eq(index)를 통해 값을 가져올 수도 있다.
+  var customer_code = td.eq(1).text();
+  var customer_name = td.eq(2).text();
+  var manager_name = td.eq(3).text();
+  var manager_phone = td.eq(4).text();
+  var manager_email = td.eq(5).text();
+  var note = td.eq(6).text();
+  var use_yn = td.eq(7).text();
+ 
+  $("#customer_code-result").val(customer_code);
+  $("#customer_name-result").val(customer_name);
+  $("#manager_name-result").val(manager_name);
+  $("#manager_phone-result").val(manager_phone);
+  $("#manager_email-result").val(manager_email);
+  $("#note-result").val(note);
+  $("#use_yn-result").val(use_yn);
+   });
     });
 
     $(function () {
-    	if("${hashMap.get('startDate')}" == ''){
-    		$("#sDatePic").datepicker().datepicker("setDate", new Date());
-    	} else {
-    		var starr = "${hashMap.get('startDate')}".split("-");
-    		var startDate = new Date(starr[0],Number(starr[1]-1),starr[2]);
-    		$("#sDatePic").datepicker().datepicker("setDate", startDate);
-    	}
-    	
-    	if("${hashMap.get('endDate')}" == ''){
-    		$("#eDatePic").datepicker().datepicker("setDate", new Date());
-    	} else {
-    		var endarr = "${hashMap.get('endDate')}".split("-");
-    		var endDate = new Date(endarr[0],Number(endarr[1]-1),endarr[2]);
-    		$("#eDatePic").datepicker().datepicker("setDate", endDate);
-    	}
+    if("${hashMap.get('startDate')}" == ''){
+    $("#sDatePic").datepicker().datepicker("setDate", new Date());
+    } else {
+    var starr = "${hashMap.get('startDate')}".split("-");
+    var startDate = new Date(starr[0],Number(starr[1]-1),starr[2]);
+    $("#sDatePic").datepicker().datepicker("setDate", startDate);
+    }
+   
+    if("${hashMap.get('endDate')}" == ''){
+    $("#eDatePic").datepicker().datepicker("setDate", new Date());
+    } else {
+    var endarr = "${hashMap.get('endDate')}".split("-");
+    var endDate = new Date(endarr[0],Number(endarr[1]-1),endarr[2]);
+    $("#eDatePic").datepicker().datepicker("setDate", endDate);
+    }
     });
 
-  </script>
-  <script>
-	// 테이블의 Row 클릭시 값 가져오기
-	$("#examples tr").click(function(){ 	
-
-		var str = ""
-		var tdArr = new Array();	// 배열 선언
-		
-		// 현재 클릭된 Row(<tr>)
-		var tr = $(this);
-		var td = tr.children();
-		
-		// tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
-		console.log("클릭한 Row의 모든 데이터 : "+tr.text());
-		
-		// 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
-		td.each(function(i){
-			tdArr.push(td.eq(i).text());
-		});
-		
-		console.log("배열에 담긴 값 : "+tdArr);
-		
-		// td.eq(index)를 통해 값을 가져올 수도 있다.
-		var customer_code = td.eq(1).text();
-		var customer_name = td.eq(2).text();
-		var manager_name = td.eq(3).text();
-		var manager_phone = td.eq(4).text();
-		var manager_email = td.eq(5).text();
-		var note = td.eq(6).text();
-		var use_yn = td.eq(7).text();
-		
-		$("#customer_code-result").val(customer_code);
-		$("#customer_name-result").val(customer_name);
-		$("#manager_name-result").val(manager_name);
-		$("#manager_phone-result").val(manager_phone);
-		$("#manager_email-result").val(manager_email);
-		$("#note-result").val(note);
-		$("#use_yn-result").val(use_yn);
-	});
   </script>
 </body>
 </html>

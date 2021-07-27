@@ -34,8 +34,8 @@ public class CustomerDto {
 	public String getManager_Phone() {
 		return Manager_Phone;
 	}
-	public void setManager_Phone(String managet_Phone) {
-		Manager_Phone = managet_Phone;
+	public void setManager_Phone(String manager_Phone) {
+		Manager_Phone = manager_Phone;
 	}
 	public String getManager_Email() {
 		return Manager_Email;

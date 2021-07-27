@@ -1,6 +1,223 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.infracube.mapper.MainMapper">
+	<select id="getGroupCode" parameterType="kr.co.infracube.dto.CodeDto" resultType="map">
+		SELECT BCode bcode, Title title, Code_Order codeorder,
+		Ext_Text1 exttext1, Ext_Text2 exttext2, Ext_Text3 exttext3,
+		Ext_Number extnum, Note note, Use_YN useyn, Insert_Code insertcode, Insert_Date insertdate
+		FROM tbl_basecode
+		WHERE Group_Code = "GROUP"
+		<if test="Title != 'all'">
+			AND Title = #{Title}
+		</if>
+		;
+	</select>
+	
+	<insert id="insertCode" parameterType="kr.co.infracube.dto.CodeDto">
+		 INSERT INTO tbl_basecode (
+			Group_Code,
+			BCode,
+			Title,
+			<if test="Code_Order != null and Code_Order != ''">
+				Code_Order,
+			</if>
+			Ext_Text1,
+			Ext_Text2,
+			Ext_Text3,
+			<if test="Ext_Number != null and Ext_Number != ''">
+				Ext_Number,
+			</if>
+			Note,
+			Use_YN,
+			Insert_Code
+		) VALUES (
+			#{Group_Code}, 
+			#{BCode}, 
+			#{Title},
+			
+			<if test="Code_Order != null and Code_Order != ''">
+				#{Code_Order},
+			</if>
+			
+			#{Ext_Text1},
+			#{Ext_Text2},
+			#{Ext_Text3},
+
+			<if test="Ext_Number != null and Ext_Number != ''">
+				#{Ext_Number},
+			</if>
+			
+			#{Note},
+			#{Use_YN},
+			#{Insert_Code}
+		);
+	</insert>
+	
+	<select id="selectCode" parameterType="kr.co.infracube.dto.CodeDto" resultType="kr.co.infracube.dto.CodeDto">
+		SELECT *
+		FROM tbl_basecode
+		WHERE Group_Code = #{Group_Code} AND BCode = #{BCode};
+	</select>
+	
+	<select id="selectAllGTitle" resultType="map">
+		SELECT Title title
+		FROM tbl_basecode
+		WHERE Group_Code = "GROUP"
+	</select>
+	
+	<update id="updateCode" parameterType="kr.co.infracube.dto.CodeDto">
+		UPDATE tbl_basecode
+		SET
+			Title = #{Title},
+			<choose>
+				<when test="Code_Order == '' or Code_Order == null">
+					Code_Order = 0,
+				</when>
+				<otherwise>
+					Code_Order = #{Code_Order},
+				</otherwise>
+			</choose>
+			Ext_Text1 = #{Ext_Text1},
+			Ext_Text2 = #{Ext_Text2},
+			Ext_Text3 = #{Ext_Text3},
+			<choose>
+				<when test="Ext_Number == '' or Ext_Number == null">
+					Ext_Number = 0,
+				</when>
+				<otherwise>
+					Ext_Number = #{Ext_Number},
+				</otherwise>
+			</choose>
+			Note = #{Note},
+			Use_YN = #{Use_YN},
+			Update_Code = #{Update_Code},
+			Update_Date = current_timestamp()
+		WHERE
+			Group_Code = #{Group_Code} and BCode = #{BCode};
+	</update>
+	
+	<select id="getBaseCode" parameterType="kr.co.infracube.dto.CodeDto" resultType="map">
+		SELECT b.Group_Code gcode, g.Title gtitle, b.BCode bcode, b.Title btitle, b.Code_Order codeorder,
+		b.Ext_Text1 exttext1, b.Ext_Text2 exttext2, b.Ext_Text3 exttext3,
+		b.Ext_Number extnum, b.Note note, b.Use_YN useyn, b.Insert_Code insertcode, b.Insert_Date insertdate
+		FROM tbl_basecode AS g, tbl_basecode AS b
+		WHERE g.BCode = b.Group_Code and b.Group_Code != 'GROUP'
+		<if test="Title != 'all'">
+			AND g.Title = #{Title}
+		</if>
+		;
+	</select>
+	
+	<select id="groupInfo" resultType="map">
+		SELECT BCode bcode FROM tbl_basecode WHERE Group_Code = 'GROUP';
+	</select>
+	
+	<select id="selectAllBTitle" resultType="map">
+		SELECT distinct g.Title gtitle
+		FROM tbl_basecode AS g, tbl_basecode AS b
+		WHERE g.Group_Code = 'GROUP' and g.BCode = b.Group_Code;
+	</select>
+	
+	<select id="getDelivery" parameterType="HashMap" resultType="map">
+		SELECT Sequence sequence, Customer_Code ccode, Customer_Name cname, Business_Name bname, Manufacturer manu, Model_Name mname,
+		Serial_Num snum, OS os, CPU cpu, Memory memory, HDD hdd, Service_Type stype, Term term, Delivery_Date ddate,
+		End_Date edate, Note note, Use_YN useyn, Insert_Delivery idelivery, Insert_Date idate, Update_Delivery udelivery, Update_Date udate
+		FROM tbl_delivery
+		<if test="startDate != '' and endDate != ''">
+			<choose>
+				<when test="checkEndDate == 'on'">
+					WHERE End_Date BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					WHERE Delivery_Date BETWEEN #{startDate} AND #{endDate}
+				</otherwise>
+			</choose>
+		</if>
+		<if test="searchWord != ''">
+			AND (Customer_Name LIKE CONCAT('%',#{searchWord},'%') OR Model_Name LIKE CONCAT('%',#{searchWord},'%') OR Serial_Num LIKE CONCAT('%',#{searchWord},'%'))
+		</if>
+		;
+	</select>
+	
+	<select id="customerInfo" resultType="map">
+		SELECT Customer_Code ccode, Customer_Name cname, Manager_Name mname, phoneNumber(Manager_Phone) mphone FROM tbl_customer;
+	</select>
+	
+	<select id="selectCustomerInfo" parameterType="HashMap" resultType="map">
+		SELECT Customer_Code ccode, Customer_Name cname, Manager_Name mname, phoneNumber(Manager_Phone) mphone FROM tbl_customer
+		<if test="search != ''">
+			WHERE Customer_Name LIKE CONCAT('%',#{search},'%') OR Manager_Name LIKE CONCAT('%',#{search},'%') OR Manager_Phone LIKE CONCAT('%',#{search},'%');
+		</if>
+	</select>
+	
+	<insert id="processInsertDelivery" parameterType="kr.co.infracube.dto.DeliveryDto">
+		INSERT INTO tbl_delivery(
+			Customer_Code,
+			Customer_Name,
+			Business_Name,
+			Manufacturer,
+			Model_Name,
+			Serial_Num,
+			OS,
+			CPU,
+			Memory,
+			HDD,
+			Service_Type,
+			Term,
+			Delivery_Date,
+			End_Date,
+			Note,
+			Use_YN,
+			Insert_Delivery
+		)VALUES(
+			#{Customer_Code},
+			#{Customer_Name},
+			#{Business_Name},
+			#{Manufacturer},
+			#{Model_Name},
+			#{Serial_Num},
+			#{OS},
+			#{CPU},
+			#{Memory},
+			#{HDD},
+			#{Service_Type},
+			#{Term},
+			#{Delivery_Date},
+			#{End_Date},
+			#{Note},
+			#{Use_YN},
+			#{Insert_Delivery}
+		);
+	</insert>
+	
+	<select id="deliveryInfo" parameterType="kr.co.infracube.dto.DeliveryDto" resultType="kr.co.infracube.dto.DeliveryDto">
+		SELECT *
+		FROM tbl_delivery
+		WHERE Sequence = #{Sequence};
+	</select>
+	
+	<update id="processUpdateDelivery" parameterType="kr.co.infracube.dto.DeliveryDto">
+		UPDATE tbl_delivery
+		SET
+			Customer_Name = #{Customer_Name},
+			Business_Name = #{Business_Name},
+			Manufacturer = #{Manufacturer},
+			Model_Name = #{Model_Name},
+			Serial_Num = #{Serial_Num},
+			OS = #{OS},
+			CPU = #{CPU},
+			Memory = #{Memory},
+			HDD = #{HDD},
+			Service_Type = #{Service_Type},
+			Term = #{Term},
+			Delivery_Date = #{Delivery_Date},
+			End_Date = #{End_Date},
+			Note = #{Note},
+			Use_YN = #{Use_YN},
+			Update_Delivery = #{Update_Delivery},
+			Update_Date = current_timestamp()
+		WHERE Sequence = #{Sequence};
+	</update>
 	<select id="processLogin" parameterType="kr.co.infracube.dto.AdminDto" resultType="kr.co.infracube.dto.AdminDto">
 		SELECT * FROM tbl_admin WHERE Email = #{email} and Password = #{password}
 	</select>
@@ -10,61 +227,57 @@
 		Update_Admin update_admin, Update_Date update_date
 		FROM tbl_admin
 		WHERE AName != '슈퍼관리자'
-		<if test="AName != null and AName != ''"> AND AName LIKE CONCAT('%',#{AName} ,'%') </if>
+	<if test="AName != null and AName != ''"> AND AName LIKE CONCAT('%',#{AName} ,'%') </if>
 	</select>
 	<select id="listCustomers" parameterType="HashMap" resultType="Map">
-		SELECT Customer_Code customer_code, Customer_Name customer_name, Manager_Name manager_name, phoneNumber(Manager_Phone) manager_phone, 
-		Manager_Email manager_email, Note note, Use_YN use_yn, Insert_Code insert_code, 
+		SELECT Customer_Code customer_code, Customer_Name customer_name, Manager_Name manager_name, phoneNumber(Manager_Phone) manager_phone,
+		Manager_Email manager_email, Note note, Use_YN use_yn, Insert_Code insert_code,
 		Insert_Date insert_date, Update_Code update_code, Update_Date update_date
 		FROM tbl_customer
-		<if test="startDate != '' and endDate != ''">
-			WHERE Insert_Date BETWEEN #{startDate} AND #{endDate}
-			<if test="searchKeyword != ''">
-				AND Customer_Name LIKE CONCAT('%',#{searchKeyword} ,'%')
-			</if>
+		<if test="searchKeyword != ''">
+			WHERE (Customer_Name LIKE CONCAT('%',#{searchKeyword} ,'%') OR Manager_Name LIKE CONCAT('%',#{searchKeyword} ,'%') OR
+			Manager_Phone LIKE CONCAT('%',#{searchKeyword} ,'%') OR Manager_Email LIKE CONCAT('%',#{searchKeyword} ,'%'))
 		</if>
 	</select>
 	<insert id="insertAdmin" parameterType="kr.co.infracube.dto.AdminDto">
-		INSERT INTO tbl_admin(Email, AName, Note, Use_YN, Insert_Admin)
-		VALUES(#{Email}, #{AName}, #{Note}, #{Use_YN}, #{Insert_Admin})
+		INSERT INTO tbl_admin(Email, Password, AName, Note, Use_YN, Insert_Admin)
+		VALUES(#{Email}, #{Password}, #{AName}, #{Note}, #{Use_YN}, #{Insert_Admin})
 	</insert>
 	<insert id="insertCustomer" parameterType="kr.co.infracube.dto.CustomerDto">
 		INSERT INTO tbl_customer(Customer_Name, Manager_Name, Manager_Phone, Manager_Email, Note, Use_YN, Insert_Code)
 		VALUES(#{Customer_Name}, #{Manager_Name}, #{Manager_Phone}, #{Manager_Email}, #{Note}, #{Use_YN}, #{Insert_Code})
 	</insert>
-	<select id="infoAdmin" parameterType="kr.co.infracube.dto.AdminDto" resultType="kr.co.infracube.dto.AdminDto">
-		SELECT Email, AName, Note, Use_YN FROM tbl_admin WHERE Email = #{Email}
-	</select>
 	<update id="updateAdmin" parameterType="kr.co.infracube.dto.AdminDto">
 		UPDATE tbl_admin
-		SET 
-			Email = #{Email},
-			AName = #{AName},
-			Note = #{Note},
-			Use_YN = #{Use_YN},
-			Update_Admin = #{Update_Admin},
-			Update_Date = current_timestamp()
+		SET
+		Email = #{Email},
+		AName = #{AName},
+		Note = #{Note},
+		Use_YN = #{Use_YN},
+		Update_Admin = #{Update_Admin},
+		Update_Date = current_timestamp()
 		WHERE
-			Email = #{Email}
+		Email = #{Email}
 	</update>
 	<update id="updateCustomer"  parameterType="kr.co.infracube.dto.CustomerDto">
 		UPDATE tbl_customer
 		SET
-			Customer_Name = #{Customer_Name},
-			Manager_Name = #{Manager_Name},
-			Manager_Phone = #{Manager_Phone},
-			Manager_Email = #{Manager_Email},
-			Note = #{Note},
-			Use_YN = #{Use_YN},
-			Update_Code = #{Update_Code}
+		Customer_Name = #{Customer_Name},
+		Manager_Name = #{Manager_Name},
+		Manager_Phone = #{Manager_Phone},
+		Manager_Email = #{Manager_Email},
+		Note = #{Note},
+		Use_YN = #{Use_YN},
+		Update_Code = #{Update_Code},
+		Update_Date = current_timestamp()
 		WHERE
-			Customer_Code = #{Customer_Code}
+		Customer_Code = #{Customer_Code}
 	</update>
 	<update id="passwordChange" parameterType="kr.co.infracube.dto.AdminDto">
 		UPDATE tbl_admin
-		SET 
-			Password = #{Password}
+		SET
+		Password = #{Password}
 		WHERE
-			Email = #{Email}
+		Email = #{Email}
 	</update>
 </mapper>

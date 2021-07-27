@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+<meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="/dist/img/logo-white.ico">
   <!-- Font & Icon -->
@@ -25,7 +25,7 @@
   <title>Infracube</title>
 </head>
 <body>
-	<!-- alert modals:S -->
+<!-- alert modals:S -->
 
 
 <!-- 등록하기 -->
@@ -42,13 +42,25 @@
           <tr>
             <th class="th">이메일</th>
             <td>
-              <input type="text" class="input" placeholder="입력하기" value="A100" name="Email">
+              <input id="email" type="text" class="input" placeholder="입력하기" value="A100" name="Email">
             </td>
           </tr>
           <tr>
             <th class="th">관리자명</th>
             <td>
-              <input type="text" class="input" placeholder="입력하기" value="" name="AName">
+              <input id="name" type="text" class="input" placeholder="입력하기" value="" name="AName">
+            </td>
+          </tr>
+          <tr>
+            <th class="th">비밀번호</th>
+            <td>
+              <input id="password" type="password" class="input" placeholder="입력하기" value="" name="Password">
+            </td>
+          </tr>
+          <tr>
+            <th class="th">비밀번호 확인</th>
+            <td>
+              <input id="password-confirm" type="password" class="input" placeholder="입력하기" value="">
             </td>
           </tr>
           <tr>
@@ -71,7 +83,7 @@
       </div>
     </div>
     <div class="modalz_foot">
-      <button class="newbtns bg1" type="submit">등록</button>
+      <button class="newbtns info_a1 bg1" type="submit">등록</button>
       <button class="newbtns modalclose" type="reset">취소</button>
     </div>
   </div>
@@ -133,7 +145,7 @@
 
 
 
-  
+ 
   <!-- alert modals:E -->
   <!-- Sidebar -->
   <div class="sidebar">
@@ -209,16 +221,18 @@
 
     <!-- Main body -->
     <div class="main_body">
+      <form name="excelForm" id="excelForm" method="POST" action="excelAdmin.do">	
       <section id="section8" class="main_bars">
         <div class="bgs-main">
           <section id="section5">
             <div class="sub_title">관리자등록</div>
             <button class="newbtn bg1 newcode" type="button">등록</button>
             <button class="newbtn bg1 recode" type="button">수정</button>
-            <button class="newbtn bg1 " type="button">엑셀</button>
+            <button class="newbtn bg1 " type="submit">엑셀</button>
           </section>
         </div>
       </section>
+      </form>
       <form id="search" action="systemset.do" method="post">
       <div class="contants_body">
         <div class="gs_b_top">
@@ -250,24 +264,24 @@
                     </tr>
                   </thead>
                   <tbody>
-                  	<c:forEach var="result" items="${list}" varStatus="status">
-                  	  <c:set var="i" value="${i+1}"/>
-	                    <tr>
-	                      <td>${i}</td>
-	                      <td>${result.email}</td>
-	                      <td>${result.admin_name}</td>
-	                      <td>${result.note}</td>
-	                      <td><label class="yesno yes">${result.use_yn}</label></td>
-	                      <td>${result.insert_admin}</td>
-	                      <td>${result.insert_date}</td>
-	                      <td>${result.update_admin}</td>
-	                      <td>${result.update_date}</td>
-	                    </tr>
+                  <c:forEach var="result" items="${list}" varStatus="status">
+                   <c:set var="i" value="${i+1}"/>
+                   <tr>
+                     <td>${i}</td>
+                     <td>${result.email}</td>
+                     <td>${result.admin_name}</td>
+                     <td>${result.note}</td>
+                     <td><label class="yesno yes">${result.use_yn}</label></td>
+                     <td>${result.insert_admin}</td>
+                     <td>${result.insert_date}</td>
+                     <td>${result.update_admin}</td>
+                     <td>${result.update_date}</td>
+                   </tr>
                     </c:forEach>
                   </tbody>
                 </table>
               </div>
-              
+             
             </div>
           </div>
         </div>
@@ -293,23 +307,33 @@
       $('#examples').DataTable({
         "paging": true,
         "searching": false,
-        "info": true
+        "info": true,
+        "ordering" : true,
+        "order" : [6,"desc"],
+        "stateSave" : true,
+        "lengthMenu" : [5,10,20,100],
+        "processing" : true,
+        "responsive" : true
       });
       $('#example2').DataTable({
-        "paging": false,
+        "paging": true,
         "searching": false,
-        "info": false,
+        "info": true
       });
     });
     $(document).ready(function () {
-      
+      var tr;
       $('.newcode').click(function () {
         $('#newcode').addClass('act');
       });
       $('.recode').click(function () {
-        $('#recode').addClass('act');
+      	if(tr == null){
+      		alert('수정할 행을 선택하세요!');
+      	} else{
+      		$('#recode').addClass('act');
+      	}
       });
-      
+     
       $('.pop-x-btn, .modalclose').click(function() {
           var tmp = $(this).parents().parents().parents()
           if (tmp.attr('class') == 'modalz act') {
@@ -318,47 +342,81 @@
               //tmp.removeClass('act');
           }
       });
-      
+      $('.info_a1').click(function () {
+    	 if($('#email').val() == null || $('#email').val() == '' || $('#name').val() == null || $('#name').val() == '' ||
+    			 $('#password').val() == null || $('#password').val() == '' || $('#password-confirm').val() == null || $('#password-confirm').val() == ''){
+    		 alert("입력칸이 비어있습니다 채워주세요.");
+    		 return false;
+    	 }
+    	 var email_rule =  /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+ 	     if (!email_rule.test($('#email').val())){
+ 		     alert("이메일을 형식에 맞게 입력해주세요.(예시: test@infracube.co.kr)");
+ 		     return false;
+ 	     }
+    	 if($('#password').val() != $('#password-confirm').val()){
+    		alert("비밀번호가 다릅니다. 비밀번호를 똑같이 입력해주세요.");
+    		return false;
+    	 }
+
+    	 var pw = $("#password").val();
+    	 var num = pw.search(/[0-9]/g);
+    	 var eng = pw.search(/[a-z]/ig);
+    	 var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+
+    	 if(pw.length < 8){
+    		  alert("8자리이상으로 입력해주세요.");
+    		  return false;
+    	 }else if(pw.search(/\s/) != -1){
+    		  alert("비밀번호는 공백 없이 입력해주세요.");
+    		  return false;
+    	 }else if(num < 0 || eng < 0 || spe < 0 ){
+    		  alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+    		  return false;
+    	 }else {
+    		console.log("통과");
+    	 }
+
+         return true;
+      });
+     
       $('.newbtnss').click(function(){
-     	 if($('#searchKeyword').val() != null && $('#searchKeyword').val() != '' ){
-     	 	$('#search').attr("action", "systemset.do?searchKeyword=" + $('#searchKeyword').val()); 
-     	 }
-       });
+      	if($('#searchKeyword').val() != null && $('#searchKeyword').val() != '' ){
+      	$('#search').attr("action", "systemset.do?searchKeyword=" + $('#searchKeyword').val());
+      	}
+      });
+      // 테이블의 Row 클릭시 값 가져오기
+	   $("#examples tbody").on('click', 'tr', function(){
+	
+		  var str = ""
+		  var tdArr = new Array(); // 배열 선언
+		 
+		  // 현재 클릭된 Row(<tr>)
+		  tr = $(this);
+		  var td = tr.children();
+		 
+		  // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+		  console.log("클릭한 Row의 모든 데이터 : "+tr.text());
+		 
+		  // 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+		  td.each(function(i){
+		  tdArr.push(td.eq(i).text());
+		  });
+		 
+		  console.log("배열에 담긴 값 : "+tdArr);
+		 
+		  // td.eq(index)를 통해 값을 가져올 수도 있다.
+		  var email = td.eq(1).text();
+		  var admin_name = td.eq(2).text();
+		  var note = td.eq(3).text();
+		  var use_yn = td.eq(4).text();
+		 
+		  $("#email-result").val(email);
+		  $("#aname-result").val(admin_name);
+		  $("#note-result").val(note);
+		  $("#use_yn-result").val(use_yn);
+	   });
     });
 
-  </script>
-  <script>
-	// 테이블의 Row 클릭시 값 가져오기
-	$("#examples tr").click(function(){ 	
-
-		var str = ""
-		var tdArr = new Array();	// 배열 선언
-		
-		// 현재 클릭된 Row(<tr>)
-		var tr = $(this);
-		var td = tr.children();
-		
-		// tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
-		console.log("클릭한 Row의 모든 데이터 : "+tr.text());
-		
-		// 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
-		td.each(function(i){
-			tdArr.push(td.eq(i).text());
-		});
-		
-		console.log("배열에 담긴 값 : "+tdArr);
-		
-		// td.eq(index)를 통해 값을 가져올 수도 있다.
-		var email = td.eq(1).text();
-		var admin_name = td.eq(2).text();
-		var note = td.eq(3).text();
-		var use_yn = td.eq(4).text();
-		
-		$("#email-result").val(email);
-		$("#aname-result").val(admin_name);
-		$("#note-result").val(note);
-		$("#use_yn-result").val(use_yn);
-	});
   </script>
 </body>
 </html>

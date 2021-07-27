@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,7 +53,7 @@
 
     <!-- Sidebar header -->
     <div class="sidebar-header">
-      <a href="index.jsp" class="logo">
+      <a href="index.html" class="logo">
         <img src="../../../dist/img/infracube_logo_m.png" alt="Logo" id="main-logo">
         <p>IT-Infra</p>System
       </a>
@@ -126,26 +127,34 @@
           <section id="section5">
             <div class="sub_title">납품목록</div>
             <button class="newbtn bg1 newcode" type="button" onclick="location.href='deliveryNew.do'">등록</button>
-            <button class="newbtn bg1 recode" type="button" onclick="location.href='deliveryEdit.do'">수정</button>
-            <button class="newbtn bg1" type="button">엑셀</button>
+            
+            <form style="display: inline;" action="deliveryEdit.do" method="post" onsubmit="">
+            	<input type="hidden" value="" id="Sequence" name="Sequence">
+            	<button class="newbtn bg1 recode" type="submit">수정</button>
+            </form>
+            <form style="display: inline;" name="excelForm" id="excelForm" method="POST" action="excelDelivery.do">
+            	<button class="newbtn bg1" type="button">엑셀</button>
+            </form>
           </section>
         </div>
       </section>
       <div class="contants_body">
+        <form style="display: inline;" method="post" action="delivery.do">
         <div class="gs_b_top">
           <ul>
             <li style="padding-left: 10px;">
-              <input type="checkbox" class="input_check">유지보수 종료일
+              <input type="checkbox" class="input_check" name="checkEndDate" <c:if test="${hashMap.get('checkEndDate') == 'on'}">checked</c:if> >유지보수 종료일
             </li>
-            <li><input type="text" class="input calender" id="sDatePic" placeholder="시작일"></li>
+            <li><input type="text" class="input calender" id="sDatePic" placeholder="시작일" name="startDate"></li>
             <li>~</li>
-            <li><input type="text" class="input calender" id="eDatePic" placeholder="종료일"></li>
-            <li><input type="text" class="input" placeholder="검색어"></li>
+            <li><input type="text" class="input calender" id="eDatePic" placeholder="종료일" name="endDate"></li>
+            <li style="width:200px;"><input type="text" class="input" placeholder="고객명,모델명,시리얼번호" name="searchWord" style="width:200px;" value="${hashMap.get('searchWord')}"></li>
             <li>
-              <button class="newbtnss bg1">검색</button>
+              <button class="newbtnss bg1" type="submit" id="searchButton">검색</button>
             </li>
           </ul>
         </div>
+        </form>
         <div class="gs_booking">
           <div class="box_column">
             <div class="containers">
@@ -190,6 +199,31 @@
                     </tr>
                   </thead>
                   <tbody>
+                  <c:forEach var="result" items="${deliveryList}" varStatus="status">
+                  		<tr>
+                  			<td>${result.sequence}</td>
+                  			<td>${result.ccode}</td>
+                  			<td>${result.cname}</td>
+                  			<td>${result.bname}</td>
+                  			<td>${result.manu}</td>
+                  			<td>${result.mname}</td>
+                  			<td>${result.snum}</td>
+                  			<td>${result.os}</td>
+                  			<td>${result.cpu}</td>
+                  			<td>${result.memory}</td>
+                  			<td>${result.hdd}</td>
+                  			<td>${result.ddate}</td>
+                  			<td>${result.stype}</td>
+                  			<td>${result.term}</td>
+                  			<td>${result.edate}</td>
+                  			<td><label class="yesno yes">${result.useyn}</label></td>
+                  			<td>${result.idelivery}</td>
+                  			<td>${result.idate}</td>
+                  			<td>${result.udelivery}</td>
+                  			<td>${result.udate}</td>
+                  		</tr>
+                  	</c:forEach>
+                  <!--
                     <tr>
                       <td>1</td>
                       <td>C2107050001</td>
@@ -212,7 +246,7 @@
                       <td></td>
                       <td></td>
                     </tr>
-                    
+                    -->
                   </tbody>
                 </table>
               </div>
@@ -265,11 +299,39 @@
               //tmp.removeClass('act');
           }
       });
+      
+      $('#examples tr').click(function () {
+    	  var tr = $(this);
+    	  var td = tr.children();
+    	  $('#Sequence').val(td.eq(0).text());
+    	  console.log($('#Sequence').val());
+
+      });
+      
+      $('.recode').click(function () {
+    	  if($('#Sequence').val() == ""){
+    		  alert('수정할 행을 선택하세요');
+    		  return false;
+    	  }
+        });
     });
 
     $(function () {
-      $("#sDatePic").datepicker().datepicker("setDate", new Date());
-      $("#eDatePic").datepicker().datepicker("setDate", new Date());
+    	if("${hashMap.get('startDate')}" == '') {
+    		$("#sDatePic").datepicker().datepicker("setDate", new Date());
+    	} else {
+    		var starr = "${hashMap.get('startDate')}".split('-');
+    		var startDate = new Date(starr[0],Number(starr[1])-1,starr[2]);
+    		$("#sDatePic").datepicker().datepicker("setDate", startDate);
+    	}
+    	
+    	if("${hashMap.get('endDate')}" == '') {
+    		$("#eDatePic").datepicker().datepicker("setDate", new Date());
+    	} else {
+    		var endarr = "${hashMap.get('endDate')}".split('-');
+    		var endDate = new Date(endarr[0],Number(endarr[1])-1,endarr[2]);
+    		$("#eDatePic").datepicker().datepicker("setDate", endDate);
+    	}
     });
 
   </script>

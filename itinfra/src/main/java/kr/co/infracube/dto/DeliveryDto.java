@@ -1,6 +1,7 @@
 package kr.co.infracube.dto;
 
 public class DeliveryDto {
+	private String Sequence;
 	private String Customer_Code;
 	private String Customer_Name;
 	private String Business_Name;
@@ -17,8 +18,18 @@ public class DeliveryDto {
 	private String End_Date;
 	private String Note;
 	private String Use_YN;
+	private String Insert_Delivery;
+	private String Insert_Date;
+	private String Update_Delivery;
+	private String Update_Date;
 	
 	
+	public String getSequence() {
+		return Sequence;
+	}
+	public void setSequence(String sequence) {
+		Sequence = sequence;
+	}
 	public String getCustomer_Name() {
 		return Customer_Name;
 	}
@@ -115,4 +126,39 @@ public class DeliveryDto {
 	public void setCustomer_Code(String customer_Code) {
 		Customer_Code = customer_Code;
 	}
+	public String getInsert_Delivery() {
+		return Insert_Delivery;
+	}
+	public void setInsert_Delivery(String insert_Delivery) {
+		Insert_Delivery = insert_Delivery;
+	}
+	public String getInsert_Date() {
+		return Insert_Date;
+	}
+	public void setInsert_Date(String insert_Date) {
+		Insert_Date = insert_Date;
+	}
+	public String getUpdate_Delivery() {
+		return Update_Delivery;
+	}
+	public void setUpdate_Delivery(String update_Delivery) {
+		Update_Delivery = update_Delivery;
+	}
+	public String getUpdate_Date() {
+		return Update_Date;
+	}
+	public void setUpdate_Date(String update_Date) {
+		Update_Date = update_Date;
+	}
+	@Override
+	public String toString() {
+		return "DeliveryDto [Sequence=" + Sequence + ", Customer_Code=" + Customer_Code + ", Customer_Name="
+				+ Customer_Name + ", Business_Name=" + Business_Name + ", Manufacturer=" + Manufacturer
+				+ ", Model_Name=" + Model_Name + ", Serial_Num=" + Serial_Num + ", OS=" + OS + ", CPU=" + CPU
+				+ ", Memory=" + Memory + ", HDD=" + HDD + ", Service_Type=" + Service_Type + ", Term=" + Term
+				+ ", Delivery_Date=" + Delivery_Date + ", End_Date=" + End_Date + ", Note=" + Note + ", Use_YN="
+				+ Use_YN + ", Insert_Delivery=" + Insert_Delivery + ", Insert_Date=" + Insert_Date
+				+ ", Update_Delivery=" + Update_Delivery + ", Update_Date=" + Update_Date + "]";
+	}
+	
 }

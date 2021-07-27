@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+<meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="dist/img/logo-white.ico">
   <!-- Font & Icon -->
@@ -25,7 +25,7 @@
 </head>
 <body onload="init()">
 <form class="password-change" action="passwordChange.do" method="post">
-	<!-- 비밀번호 변경 alert:Start -->
+<!-- 비밀번호 변경 alert:Start -->
   <div class="modalz" id="info_a1">
     <div class="modalz_body small">
       <div class="modalz_tit">
@@ -62,10 +62,10 @@
             <div class="text-center opacity-50 font-italic">IT-Infra Management System</div>
           </div>
           <ul>
-            <li><input type="text" class="login_input" value="${sessionId }"placeholder="이메일" name="Email" readonly></li>
+            <li><input type="text" class="login_input" value="${Email }"placeholder="이메일" name="Email" readonly></li>
             <li><input id="OTP" type="text" class="login_input" placeholder="OTP 숫자 6자리"></li>
             <li><div id="timer" class="small text-right text-danger"><h5>(3:00)</h5></div></li>
-            
+           
             <li><input id="password" type="password" class="login_input" placeholder="비밀번호" name="Password"></li>
             <li><input id="password-confirm" type="password" class="login_input" placeholder="비밀번호확인"></li>
             <li class="line"></li>
@@ -109,9 +109,26 @@
     		alert("비밀번호가 다릅니다. 비밀번호를 똑같이 입력해주세요.");
     		return false;
     	}
-       	$('#info_a1').addClass('act');
+    	var pw = $("#password").val();
+   	 	var num = pw.search(/[0-9]/g);
+   	 	var eng = pw.search(/[a-z]/ig);
+   	 	var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+
+	   	if(pw.length < 8){
+	   		alert("8자리이상으로 입력해주세요.");
+	   		return false;
+	   	}else if(pw.search(/\s/) != -1){
+	   		alert("비밀번호는 공백 없이 입력해주세요.");
+	   		return false;
+	   	}else if(num < 0 || eng < 0 || spe < 0 ){
+	   		alert("영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+	   		return false;
+	   	}else {
+	   		console.log("통과");
+	   	}
+        $('#info_a1').addClass('act');
       });
-      
+     
       $('.pop-x-btn, .modalclose').click(function() {
           var tmp = $(this).parents().parents().parents()
           if (tmp.attr('class') == 'modalz act') {
@@ -133,20 +150,20 @@ function init(){
     // 남은 시간
     // 이미 타이머가 작동중이면 중지
     if (isRunning){
-    	clearInterval(timer);
-    	display.html("");
-    	startTimer(leftSec, display);
+    clearInterval(timer);
+    display.html("");
+    startTimer(leftSec, display);
     }else{
-    	startTimer(leftSec, display);
-    		
+    startTimer(leftSec, display);
+   
     }
 
 }
 
-    
+   
 function startTimer(count, display) {
-            
-    		var minutes, seconds;
+           
+    var minutes, seconds;
             timer = setInterval(function () {
             minutes = parseInt(count / 60, 10);
             seconds = parseInt(count % 60, 10);
@@ -158,10 +175,10 @@ function startTimer(count, display) {
      
             // 타이머 끝
             if (--count < 0) {
-    	     clearInterval(timer);
-    	     alert("시간초과");
-    	     isRunning = false;
-    	     window.location.href = "login.do"
+        clearInterval(timer);
+        alert("시간초과");
+        isRunning = false;
+        window.location.href = "login.do"
             }
         }, 1000);
              isRunning = true;

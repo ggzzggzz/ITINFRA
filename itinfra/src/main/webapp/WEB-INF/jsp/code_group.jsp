@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,6 +28,7 @@
 	<!-- alert modals:S -->
   
   <!-- 등록하기 -->
+  <form class="group_insert" action="insertGroup.do" method="post" onsubmit="return CheckInsertForm()">
   <div class="modalz" id="newcode">
     <div class="modalz_body small">
       <div class="modalz_tit">
@@ -35,75 +37,80 @@
       </div>
       <div class="modalz_con">
         <div class="forms_table_non">
+        	<input type="hidden" value="GROUP" name="Group_Code">
           <table>
             <tr>
               <th class="th">그룹코드</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="A100">
+                <input type="text" class="input" placeholder="입력하기" value="A100" name="BCode" id="insert_B">
               </td>
             </tr>
             <tr>
               <th class="th">그룹코드명</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Title" id="insert_T">
               </td>
             </tr>
             <tr>
               <th class="th">정렬순서</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Code_Order" id="insert_C_O">
               </td>
             </tr>
             <tr>
               <th class="th">Text Value1</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Ext_Text1">
               </td>
             </tr>
             <tr>
               <th class="th">Text Value2</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Ext_Text2">
               </td>
             </tr>
             <tr>
               <th class="th">Text Value3</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Ext_Text3">
               </td>
             </tr>
             <tr>
               <th class="th">정수값</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Ext_Number" id="insert_E_N">
               </td>
             </tr>
             <tr>
               <th class="th">메모</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Note">
               </td>
             </tr>
             <tr>
               <th class="th">사용유무</th>
               <td>
-                <select class="input">
-                  <option>사용</option>
-                  <option>사용안함</option>
+                <select class="input" name="Use_YN">
+                  <option value="Y">사용</option>
+                  <option value="N">사용안함</option>
                 </select>
               </td>
             </tr>
           </table>
+          <input type="hidden" value="${sessionName}" name="Insert_Code">
         </div>
       </div>
       <div class="modalz_foot">
-        <a href="#" class="newbtns bg1">등록</a>
-        <a href="#" class="newbtns modalclose">취소</a>
+        <button class="newbtns bg1" type="submit">등록</button>
+        <button  class="newbtns modalclose" type="reset">취소</button>
       </div>
     </div>
     <div class="dim"></div>
   </div>
+  </form>
+  
   <!-- 수정하기::등록하기 폼과 같음(타이틀&버튼명만 다름) -->
+  <form action="updateGroup.do" method="post" onsubmit="return CheckUpdateForm()">
   <div class="modalz" id="recode">
     <div class="modalz_body small">
       <div class="modalz_tit">
@@ -112,74 +119,77 @@
       </div>
       <div class="modalz_con">
         <div class="forms_table_non">
+        <input type="hidden" value="GROUP" name="Group_Code">
           <table>
             <tr>
               <th class="th">그룹코드</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="GROUP" disabled>
+                <input type="text" class="input" placeholder="입력하기" value="" name="BCode" id="re_BCode" readonly>
               </td>
             </tr>
             <tr>
               <th class="th">그룹코드명</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Title" id="re_Title">
               </td>
             </tr>
             <tr>
               <th class="th">정렬순서</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Code_Order" id="re_Code_Order">
               </td>
             </tr>
             <tr>
               <th class="th">Text Value1</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Ext_Text1" id="re_Ext_Text1">
               </td>
             </tr>
             <tr>
               <th class="th">Text Value2</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Ext_Text2" id="re_Ext_Text2">
               </td>
             </tr>
             <tr>
               <th class="th">Text Value3</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Ext_Text3" id="re_Ext_Text3">
               </td>
             </tr>
             <tr>
               <th class="th">정수값</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Ext_Number" id="re_Ext_Number">
               </td>
             </tr>
             <tr>
               <th class="th">메모</th>
               <td>
-                <input type="text" class="input" placeholder="입력하기" value="">
+                <input type="text" class="input" placeholder="입력하기" value="" name="Note" id="re_Note">
               </td>
             </tr>
             <tr>
               <th class="th">사용유무</th>
               <td>
-                <select class="input">
-                  <option>사용</option>
-                  <option>사용안함</option>
+                <select class="input" name="Use_YN" id="re_Use_YN">
+                  <option value="Y">사용</option>
+                  <option value="N">사용안함</option>
                 </select>
               </td>
             </tr>
           </table>
+          <input type="hidden" name="Update_Code" value="${sessionName}">
         </div>
       </div>
       <div class="modalz_foot">
-        <a href="#" class="newbtns bg1">수정</a>
-        <a href="#" class="newbtns modalclose">취소</a>
+        <button class="newbtns bg1" type="submit">수정</button>
+        <button  class="newbtns modalclose" type="reset">취소</button>
       </div>
     </div>
     <div class="dim"></div>
   </div>
+  </form>
   <!-- alert modals:E -->
   <!-- Sidebar -->
   <div class="sidebar">
@@ -242,7 +252,7 @@
       </a>
       <ul class="nav nav-circle ml-auto">
         <li class="nav-item d-none d-sm-block">
-          <label class="tit">${sessionName}</label>
+          <label class="tit" id="admin-name">${sessionName}</label>
           <a href="logout.do">
             <small class="text-secondary text-danger">
               <i class="mr-1 ml-2" data-feather="log-out"></i>로그아웃
@@ -265,20 +275,23 @@
         </div>
       </section>
       <div class="contants_body">
+      	<form style="display: inline;" action="groupCode.do" method="post">
         <div class="gs_b_top">
           <ul>
             <li>
-              <select class="input">
-                <option>전체</option>
-                <option>사용여부</option>
-                <option>제조사</option>
+              <select class="input" name="searchOption">
+                <option value="all" <c:out value="${searchOption == 'all'?'selected':''}"/> >전체</option>
+                <c:forEach var="result" items="${searchgrouplist}" varStatus="status">
+                	<option value="${result.title}" <c:out value="${searchOption == result.title?'selected':''}"/> >${result.title}</option>
+                </c:forEach>
               </select>
             </li>
             <li>
-              <button class="newbtnss bg1">검색</button>
+              <button class="newbtnss bg1" type="submit">검색</button>
             </li>
           </ul>
         </div>
+        </form>
         <div class="gs_booking">
           <div class="box_column">
             <div class="containers">
@@ -298,8 +311,24 @@
                       <th>등록자</th>
                       <th>저장일시</th>
                     </tr>
-                  </thead>
+                  </thead>  
                   <tbody>
+                  	<c:forEach var="result" items="${groupList}" varStatus="status">
+                  		<tr>
+                  			<td>${result.bcode}</td>
+                  			<td>${result.title}</td>
+                  			<td>${result.codeorder}</td>
+                  			<td>${result.exttext1}</td>
+                  			<td>${result.exttext2}</td>
+                  			<td>${result.exttext3}</td>
+                  			<td>${result.extnum}</td>
+                  			<td>${result.note}</td>
+                  			<td>${result.useyn}</td>
+                  			<td>${result.insertcode}</td>
+                  			<td>${result.insertdate}</td>
+                  		</tr>
+                  	</c:forEach>
+                  <!--
                     <tr>
                       <td>GROUP</td>
                       <td>사용여부</td>
@@ -326,6 +355,7 @@
                       <td>관리자1</td>
                       <td>2021-07-01 10:50:55</td>
                     </tr>
+                  -->
                   </tbody>
                 </table>
               </div>
@@ -367,9 +397,6 @@
       $('.newcode').click(function () {
         $('#newcode').addClass('act');
       });
-      $('.recode').click(function () {
-        $('#recode').addClass('act');
-      });
       
       $('.pop-x-btn, .modalclose').click(function() {
           var tmp = $(this).parents().parents().parents()
@@ -379,8 +406,64 @@
               //tmp.removeClass('act');
           }
       });
+      
+      
+      var tr
+      
+      $('.recode').click(function () {
+    	  if(tr == null){
+    		  alert('수정할 행을 선택하세요');
+    	  } else{
+    		  $('#recode').addClass('act');
+    	  }
+        });
+      
+      $('#examples tr').click(function() {
+    		tr = $(this);
+      	  	var td = tr.children();
+      	  	$('.recode').click(function () {    	  		     	  		
+	      	  	$('#re_BCode').val(td.eq(0).text());
+	      		$('#re_Title').val(td.eq(1).text());
+	      		$('#re_Code_Order').val(td.eq(2).text());
+	      		$('#re_Ext_Text1').val(td.eq(3).text());
+	      		$('#re_Ext_Text2').val(td.eq(4).text());
+	      		$('#re_Ext_Text3').val(td.eq(5).text());
+	      		$('#re_Ext_Number').val(td.eq(6).text());
+	      		$('#re_Note').val(td.eq(7).text());
+	      		$('#re_Use_YN').val(td.eq(8).text());
+      	  });
+    	});
     });
 
+    function CheckInsertForm () {
+    	if($('#insert_T').val() == "") {
+    		alert('그룹코드명을 입력하세요');
+    		return false;
+    	}else if($('#insert_B').val() == "") {
+    		alert('그룹코드를 입력하세요');
+    		return false;
+    	} else if((!$.isNumeric($('#insert_C_O').val())) && ($('#insert_C_O').val() != null && $('#insert_C_O').val() != "")) {
+    		alert('정렬순서엔 숫자만 입력이 가능합니다');
+    		return false;
+    	} else if((!$.isNumeric($('#insert_E_N').val())) && ($('#insert_E_N').val() != null && $('#insert_E_N').val() != "")) {
+    		alert('정수값엔 숫자만 입력이 가능합니다');
+    		return false;
+    	}
+    }
+    
+    function CheckUpdateForm () {
+    	if($('#re_Title').val() == "") {
+    		alert('그룹코드명을 입력하세요');
+    		return false;
+    	} else if((!$.isNumeric($('#re_Code_Order').val())) && ($('#re_Code_Order').val() != null && $('#re_Code_Order').val() != "")) {
+    		alert('정렬순서엔 숫자만 입력이 가능합니다');
+    		return false;
+    	} else if((!$.isNumeric($('#re_Ext_Number').val())) && ($('#re_Ext_Number').val() != null && $('#re_Ext_Number').val() != "")) {
+    		alert('정수값엔 숫자만 입력이 가능합니다');
+    		return false;
+    	}
+    }
+    
   </script>
 </body>
 </html>
